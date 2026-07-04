@@ -1,0 +1,7 @@
+﻿requests
+beautifulsoup4
+markdownify
+python-dotenv
+openai
+google-genai
+tenacity

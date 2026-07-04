@@ -1,0 +1,11 @@
+﻿{
+    "provider":  "gemini",
+    "file_search_store_name":  "fileSearchStores/thenextalphasupportdocs-7hb7sxfsodpn",
+    "files_uploaded":  50,
+    "estimated_chunks":  165,
+    "chunking_strategy":  "Whitespace chunking, max 512 tokens per chunk, 100 token overlap",
+    "upload_method":  "Programmatic upload via Gemini API, no UI drag-and-drop",
+    "sanity_check_command":  "python ask_gemini.py",
+    "sanity_check_question":  "How do I add a YouTube video?",
+    "sanity_check_status":  "Passed with Article URL citations"
+}
