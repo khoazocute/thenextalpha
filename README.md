@@ -55,8 +55,9 @@ docker run --env-file .env thenextalpha
 
 ## Daily Job
 
-Logs: TODO
+Logs: https://dashboard.render.com/cron/crn-d94khpho3t8c739688gg/logs?r=live
 
 ## Screenshot
 
 Assistant answer screenshot: `screenshots/optibot-youtube-answer.png`
+
