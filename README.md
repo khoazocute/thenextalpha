@@ -1,6 +1,6 @@
-﻿# TheNextAlpha
+# TheNextAlpha
 
-Daily job that scrapes OptiSigns support articles, converts them to Markdown, and syncs changed documents into a Google Gemini File Search store for an OptiBot-style assistant.
+OptiBot mini-clone pipeline for the take-home test. It scrapes OptiSigns support articles, normalizes them into Markdown, uploads changed documents to a Gemini File Search store through API, and validates an assistant answer with cited `Article URL` lines.
 
 ## Setup
 
@@ -10,7 +10,15 @@ cp .env.sample .env
 python create_gemini_store.py
 ```
 
-Fill `.env` with `AI_PROVIDER=gemini`, `GEMINI_API_KEY`, the printed `GEMINI_FILE_SEARCH_STORE_NAME`, `SUPPORT_BASE_URL=https://support.optisigns.com`, and `MAX_ARTICLES=50`.
+Fill `.env` with:
+
+```env
+AI_PROVIDER=gemini
+GEMINI_API_KEY=<your Gemini API key>
+GEMINI_FILE_SEARCH_STORE_NAME=<printed by create_gemini_store.py>
+SUPPORT_BASE_URL=https://support.optisigns.com
+MAX_ARTICLES=50
+```
 
 ## Run Locally
 
@@ -18,17 +26,15 @@ Fill `.env` with `AI_PROVIDER=gemini`, `GEMINI_API_KEY`, the printed `GEMINI_FIL
 python main.py
 ```
 
-The job re-scrapes articles, writes clean Markdown to `data/articles`, detects `added`, `updated`, and `skipped` articles with SHA256 hashes, and uploads only added/updated files.
+`main.py` runs once and exits. It re-scrapes the Help Center through the Zendesk API, writes clean Markdown files to `data/articles`, computes SHA256 hashes, classifies articles as `added`, `updated`, or `skipped`, and uploads only changed files.
 
-## Gemini Assistant
-
-The assistant is configured with Gemini File Search through the API. Markdown files are uploaded programmatically; no UI drag-and-drop is used.
+## Assistant Check
 
 ```bash
 python ask_gemini.py
 ```
 
-Sanity check question: `How do I add a YouTube video?`
+This asks the required sanity-check question: `How do I add a YouTube video?` The script calls Gemini with the `file_search` tool and the File Search store created by API. The answer must use uploaded docs and cite `Article URL` lines.
 
 System prompt:
 
@@ -40,11 +46,9 @@ You are OptiBot, the customer-support bot for OptiSigns.com.
 • Cite up to 3 "Article URL:" lines per reply.
 ```
 
-## Upload And Chunking
+## Upload Strategy
 
-Current Gemini File Search store: `fileSearchStores/thenextalphasupportdocs-7hb7sxfsodpn`.
-
-Last successful Gemini upload: 50 Markdown files, estimated 165 chunks. Chunking uses whitespace chunks with 512 max tokens and 100 token overlap. See `data/gemini_upload_summary.json` and `data/last_run.json`.
+Markdown files are uploaded programmatically through Gemini API; no UI drag-and-drop is used. Current upload summary: 50 Markdown files and 165 estimated chunks. Chunking uses whitespace chunks with 512 max tokens and 100 token overlap. See `data/gemini_upload_summary.json`.
 
 ## Docker
 
@@ -55,9 +59,8 @@ docker run --env-file .env thenextalpha
 
 ## Daily Job
 
-Logs: https://dashboard.render.com/cron/crn-d94khpho3t8c739688gg/logs?r=live
+Deployed as a Render Cron Job. Logs: https://dashboard.render.com/cron/crn-d94khpho3t8c739688gg/logs?r=live
 
 ## Screenshot
 
 Assistant answer screenshot: `screenshots/optibot-youtube-answer.png`
-
